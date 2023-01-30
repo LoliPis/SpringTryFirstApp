@@ -1,6 +1,6 @@
 package me.vale.springtryfirstapp.model;
 
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
