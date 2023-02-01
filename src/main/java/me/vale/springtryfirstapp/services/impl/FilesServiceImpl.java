@@ -4,6 +4,7 @@ import me.vale.springtryfirstapp.services.FilesService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -35,13 +36,21 @@ public class FilesServiceImpl implements FilesService {
         try {
             return Files.readString(path);
         } catch (NoSuchFileException e) {
-            return null;
+            e.printStackTrace();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+        return null;
     }
 
-    private boolean cleanDataFile(String dataFileName) {
+    @Override
+    public File getDataFile(String dataFileName) {
+        return new File(dataFilePath + "/" + dataFileName);
+    }
+
+
+    @Override
+    public boolean cleanDataFile(String dataFileName) {
         Path path = Path.of(dataFilePath, dataFileName);
         try {
             Files.createDirectories(path.getParent());

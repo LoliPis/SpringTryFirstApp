@@ -75,7 +75,7 @@ public class IngredientServiceImpl implements IngredientService {
             String json = new ObjectMapper().writeValueAsString(ingredients);
             filesService.saveToFile(json, ingredientFileName);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -86,8 +86,7 @@ public class IngredientServiceImpl implements IngredientService {
             ingredients = new  ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Ingredient>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
-
 }
