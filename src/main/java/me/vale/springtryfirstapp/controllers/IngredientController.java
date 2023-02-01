@@ -1,7 +1,6 @@
 package me.vale.springtryfirstapp.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +15,7 @@ import java.util.Map;
 @RequestMapping("/ingredient")
 @Tag(name = "Ингредиенты", description = "CRUD-операции и другие эндпоинты для работы с ингредиентами")
 public class IngredientController {
-    private IngredientService ingredientService;
+    private final IngredientService ingredientService;
 
     public IngredientController(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
@@ -130,4 +129,5 @@ public class IngredientController {
         }
         return ResponseEntity.notFound().build();
     }
+
 }
