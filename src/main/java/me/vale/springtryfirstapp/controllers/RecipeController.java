@@ -6,9 +6,17 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import me.vale.springtryfirstapp.model.Recipe;
 import me.vale.springtryfirstapp.services.RecipeService;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 @RestController
@@ -33,7 +41,7 @@ public class RecipeController {
             )
     })
     public ResponseEntity<Integer> addRecipe(@RequestBody Recipe recipe) {
-        int id  = recipeService.addRecipe(recipe);
+        int id = recipeService.addRecipe(recipe);
         return ResponseEntity.ok(id);
     }
 
@@ -53,8 +61,8 @@ public class RecipeController {
             )
     })
     public ResponseEntity<Recipe> getRecipeById(@PathVariable int id) {
-        Recipe recipe =  recipeService.getRecipe(id);
-        if (recipe == null){
+        Recipe recipe = recipeService.getRecipe(id);
+        if (recipe == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(recipe);
@@ -75,11 +83,24 @@ public class RecipeController {
                     description = "Ни один рецепт не найден"
             )
     })
-    public ResponseEntity<Map<Integer, Recipe>> getAllRecipes(){
-        if (recipeService.getAllRecipes() != null) {
-            return ResponseEntity.ok().body(recipeService.getAllRecipes());
+    public ResponseEntity<Object> getAllRecipes() {
+        try {
+            Path path = recipeService.createReport();
+            if (Files.size(path) == 0) {
+                return ResponseEntity.noContent().build();
+            }
+
+            InputStreamResource resource = new InputStreamResource(new FileInputStream(path.toFile()));
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentLength(Files.size(path))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; " +
+                            "filename=\"RecipesReport.txt\"")
+                    .body(resource);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e.toString());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @PutMapping("/{id}")
@@ -121,10 +142,12 @@ public class RecipeController {
                     description = "Такой рецепт не найден"
             )
     })
-    public ResponseEntity<Void> deleteRecipe(@PathVariable int id){
+    public ResponseEntity<Void> deleteRecipe(@PathVariable int id) {
         if (recipeService.deleteRecipe(id)) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
+
+
 }

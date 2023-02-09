@@ -13,5 +13,4 @@ public class Recipe {
     private int timeOfPreparing;
     private LinkedList<Ingredient> ingredients;
     private LinkedList<String> steps;
-
 }

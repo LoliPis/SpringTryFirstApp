@@ -2,6 +2,8 @@ package me.vale.springtryfirstapp.services;
 
 import me.vale.springtryfirstapp.model.Recipe;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Map;
 
 public interface RecipeService {
@@ -17,4 +19,6 @@ public interface RecipeService {
 
 
     boolean deleteRecipe(int id);
+
+    Path createReport() throws IOException;
 }
